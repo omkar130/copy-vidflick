@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.login-box{
+    position: absolute;
+    top:5%;
+    left: 33%;
+    width: 460px;
+    height: 500px;
+    border: 2px solid darkblue;
+}
+
+.login-box .name{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    top: 0%;
+    position: absolute;
+    font-size: 40px;
+}
+
+.login-box img{
+    height: 60px;
+    width: 70px;
+    position: absolute;
+    left:20%;
+    top:4%;
+}
+
+.login-box h1{
+    position: absolute;
+    top:20%;
+    left: 40%;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 25px;
+    font-weight: 300;
+    color: blue;
+}
+
+.login-box x2{
+    position: absolute;
+    top:52%;
+    left: 7%;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 15px;
+    color: blue;
+}
+
+.login-box x3{
+    position: absolute;
+    top:78%;
+    left: 7%;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 18px;
+    color: blue;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-box input{
+    position: absolute;
+    top:35%;
+    left: 7%;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 20px;
+    color: blue;
+    font-weight: bold;
+    height: 40px;
+    width: 400px;
+    background: none;
+    border: 1px solid darkblue;
+    cursor: pointer;
+}
+
+input::placeholder{
+    position: absolute;
+    top: 30%;
+    left: 6px;
+    font-size: 15px;
+    color: blue;
+}
+
+.login-box button{
+    position: absolute;
+    top: 76%;
+    left: 74%;
+    background-color: darkblue;
+    color: white;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    height: 35px;
+    width: 78px;
+    font-size: 20px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.login-box button:hover{
+  background-color: black;
+  transform: perspective(500px) rotateY(45deg);
+}
+
+
+
+
+

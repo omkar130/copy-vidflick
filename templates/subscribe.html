@@ -1,0 +1,35 @@
+<!--subscribe logic-->
+<script>
+    subcounter = document.getElementById("count")
+    sub_button = document.getElementById("sub-btn")
+    subscriber_added = []
+
+    function addsub(){
+        axios
+        .get("{% url 'add-sub' channel.pk %}")
+        .then(response => {
+                this.response= response.data;
+                sub_button.innerHTML= this.response;
+                loadsub();
+                sub_button.classList.toggle("unsubscribe-btn");
+            })
+
+          url=  "{% url 'add-sub' channel.pk %}"
+          console.log(url)
+
+        }
+
+        function loadsub(){
+        axios
+        .get("{% url 'load-sub' channel.pk %}")
+        .then(response => {
+                this.response= response.data;
+                subcounter.innerHTML =  this.response.length;
+            })
+
+            url=  "{% url 'load-sub' channel.pk %}"
+          console.log(url)
+        }   
+        window.onload = loadsub();
+
+</script>

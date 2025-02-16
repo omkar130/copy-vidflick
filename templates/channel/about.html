@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidFlick</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css" integrity="sha384-3B6NwesSXE7YJlcLI9RpRqGf2p/EgVH8BgoKTaUrmKNDkHPStTQ3EyoYjCGXaOTS" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+
+</head>
+<body>
+
+
+    <div class="header">
+     
+
+        <div class="header_left">
+            <i id="menu" class="material-icons">menu</i>
+            <a href="index.html">
+                <img src="{% static 'images/icon.png'%}" alt="" style="width:40px; height:30px">
+            </a>
+        </div>
+    
+
+        <div class="header__search">
+            <form action="">
+                <input type="text" placeholder="Search">
+                <button><i class="material-icons">search</i></button>
+            </form>
+        </div>
+       
+
+        <div class="header__icons">
+            <i class="material-icons display-this">search</i>
+            <i class="material-icons ">videocam</i>
+            <i class="material-icons">apps</i>
+            <i class="material-icons display-this">notifications</i>
+            <i id="drop-down" class="material-icons display-this">account_circle</i>
+        </div>
+        <!-- Header Icons Ends -->
+
+    </div>
+
+    <!-- Main Body Starts -->
+    <div class="mainBody">   
+        <!-- Video Section Starts -->
+        <div class="videos">
+            
+            <div class="channel-art">
+                <img src="{{channel.channel_art.url}}" alt="">
+            </div>
+            <div class="channel-header flex">
+                <div class="channel-img-title flex">
+                    <img class="img" src="{{channel.image.url}}" alt="">
+                    <div class="channel-image-texts">
+                        <h4>{{channel.channel_name}}</h4>
+                        <span id="count"></span> <span>Subscribers</span>
+                    </div>
+                </div>
+                <div class="sub">
+                    <button onclick="addsub()" id="sub-btn" class="subscribe-btn">Subscribe</button>
+                </div>
+            </div>
+            <div class="channel-header-links flex">
+                <a href="{% url 'channel-prof' channel.id %}" class="display-this">Home</a>      <!--channel object has been sent by view to html-->
+                <a href="{% url 'channel-videos' channel.id %}" class="display-this">Videos</a>
+                <a href="" class="dont-display-thdis">Community</a>
+                <a href="{% url 'channel-about' channel.id %}" class="display-this">About</a>
+                <a href="" class="dont-display-this"><i class="material-icons">search</i></a>
+            </div>
+            
+             
+            <br>
+                <hr>
+            <div class="videos__container">
+                <!-- Single Video Starts Here -->
+
+                <div class="conteent-border">
+                    <div class="about-div">
+                        <div class="about-left">
+                            <h3>Description</h3>
+                            <h4>{{channel.description}}</h4>
+                            <hr>
+                            <div class="about-details">
+                                <div>
+                                    <h4>Details</h4>
+                                </div>
+                                
+                                <div class="about-biz">
+                                    <h3><small>Business enquiry:</small></h3>
+                                    <h3 class="left-h4"><small>{{channel.bussiness_email}}</small></h3>
+                                </div>
+
+                                <div class="about-biz">
+                                    <h3><small>Bussiness Location:</small></h3>
+                                    <h3 class="left-h4"><small>{{channel.bussiness_location}}</small></h3>
+                                </div>
+                                
+                            </div>
+                            <hr>
+                        <div class="about-right">
+                            <div class="stats">
+                                <h5>Joined</h5>
+                                <h5>{{channel.joined|date:"M.d. Y"}}</h5>
+                                <hr>
+                                <h5>
+                                    <i class="material-icons">flag</i>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% include 'subscribe.html' %}
+<script src="js/main.js"></script>
+</body>
+</html>

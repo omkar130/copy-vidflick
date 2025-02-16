@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidFlick</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css" integrity="sha384-3B6NwesSXE7YJlcLI9RpRqGf2p/EgVH8BgoKTaUrmKNDkHPStTQ3EyoYjCGXaOTS" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+
+</head>
+<body>
+
+    <div class="header">
+        <!-- Header menu Start -->
+
+        <div class="header_left">
+            <i id="menu" class="material-icons">menu</i>
+            <a href="index.html">
+                <img src="{% static 'images/icon.png'%}" alt="" style="width:40px; height:30px">
+            </a>
+        </div>
+        <!-- Header menu end -->
+
+        <!-- Header seach Start -->
+
+        <div class="header_search">
+            <form action="">
+                <input type="text" placeholder="Search">
+                <button><i class="material-icons">search</i></button>
+            </form>
+        </div>
+        <!-- Header search Start -->
+        
+        <!-- Header Icons Start -->
+        <div class="header__icons">
+            <i class="material-icons display-this">search</i>
+            <i class="material-icons ">videocam</i>
+            <i class="material-icons">apps</i>
+            <i class="material-icons display-this">notifications</i>
+            <i id="drop-down" class="material-icons display-this">account_circle</i>
+        </div>
+        <!-- Header Icons Ends -->
+
+    </div>
+
+    <!-- Main Body Starts -->
+    <div class="mainBody">
+        <!-- Video Section Starts -->
+        <div class="videos">
+            
+            <div class="channel-art">
+                <img src="{{channel.channel_art.url}}" alt="">
+            </div>
+            <div class="channel-header flex">
+                <div class="channel-img-title flex">
+                    <img class="img" src="{{channel.image.url}}" alt="">
+                    <div class="channel-image-texts">
+                        <h4>{{channel.channel_name}}</h4>
+                        <span id="count"></span> <span>Subscribers</span>
+                    </div>
+                </div>
+                <div class="sub">
+                    <button onclick="addsub()" id="sub-btn" class="subscribe-btn">Subscribe</button>
+                </div>
+            </div>
+            <div class="channel-header-links flex">
+                <a href="{% url 'channel-prof' channel.id %}" class="display-this">Home</a>      <!--channel object has been sent by view to html-->
+                <a href="{% url 'channel-videos' channel.id %}" class="display-this">Videos</a>
+                <a href="" class="dont-display-thdis">Community</a>
+                <a href="{% url 'channel-about' channel.id %}" class="display-this">About</a>
+                <a href="" class="dont-display-this"><i class="material-icons">search</i></a>
+            </div>
+            
+            <hr>
+            <br>
+            <div class="popular-video flex">
+                <h3>All Videos</h3>
+                
+            </div>
+            <br>
+            <div class="videos__container">
+                <!-- Single Video Starts Here -->
+                {% for v in  videos %}
+                <div class="video">
+                    <div class="video_thumbnail">
+                       <a href="{% url 'video-detail' v.id %}"> <img src="{{v.image.url}}" alt=""> </a>  <!-- we are getting image from database using object. url tells django that u need to get image from path -->
+                    </div>
+                    <div class="video_details">
+                        <div class="author">
+                            <img src="{{v.user.channel_user.image.url}}" alt="">
+                        </div>
+                        <div class="title">
+                            <a href="{% url 'video-detail' v.id %}"> <h3>{{v.title}}</h3></a>  <!--video-detail is name that we mentioned in urls.py , django stores id of all videos in db so we use v.id to get it-->
+                            <a href=""><small>{{v.user.channel_user.channel_name}} {% if v.user.channel_user.verified == True %}<i class="material-icons">verified</i>{% endif %}</small></a>
+                            <span><small>{{v.views}} Views. {{v.date| timesince}}</small></span> <!--timesince to get correct time format like (-- minutes ago)-->
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+        
+            </div>
+        </div>
+    </div>
+
+    {% include 'subscribe.html' %}
+<script src="js/main.js"></script>
+</body>
+</html>

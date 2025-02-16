@@ -1,0 +1,361 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidFlick</title>
+    <link rel="icon" type="images/png" href="images/icon.png">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/video.css'%}">
+    <base href="{% static '' %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+
+    
+</head>
+<body>
+
+    <div class="header">
+        <div class="header_left">
+            <i id="menu" class="material-icons">menu</i>
+            <img style="width:30px"src="images/icon.png">
+        </div>
+
+        <div class="header_search">
+            <form action="">
+                <input type="text" placeholder="Search">
+                <button><i class="material-icons">search</i></button>
+            </form>
+        </div>
+
+        <div class="header_icons">
+            <i class="material-icons display-this">search</i>
+            <i class="material-icons display-this">videocam</i>
+            <i class="material-icons display-this">apps</i>
+            <i class="material-icons display-this">notifications</i>
+            <i id="drop-down" class="material-icons display-this">account_circle</i>
+        </div>
+
+    </div>
+
+    <main class="single_pages">
+        <section class="video_items flex">
+            <div class="left">
+                <div class="left_content">
+                    <video controls>
+                        <source src="{{video.video.url}}" type="video/mp4"> <!--video-object, video-database variable-->
+                    </video>
+
+                    <div class="tag">
+                        <label for="" class="tags">
+                            {% for t in video.tags.all%}      <!-- getting all tags from DB -->
+                                #{{t.name}},
+                            {% endfor %}
+                        </label>
+                        <p>{{video.title}}</p>
+                    </div>
+
+                    <div class="view flex border_bottom">
+                        <div class="view-text">
+                            <span>{{video.views}} Views</span>
+                        </div>
+                        <div class="flex">
+                            <div class="icon">
+                                <button id="like-button" onclick="addlike()"><i class="fa fa-thumbs-up"></i></button>
+                                <label for=""><span id="like-count">0</span></label>
+                            </div>
+
+                            <div class="icon">
+                                <button id="dislike-button" onclick="adddislike()"><i class="fa fa-thumbs-down"></i></button>
+                                <label for=""><span id="dislike-count">0</span></label>
+                            </div>
+
+                            <div class="icon">
+                                <button><i class="fa fa-bookmark"></i></button>
+                                <label for="">Save</label>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="details flex border_bottom">
+                        <div class="img">
+                            <img  src="{{video.user.channel_user.image.url}}" alt=""> <!--video.user it will check both models.py , after that .channel_user ask django to check in Channel models.py-->
+                        </div>
+                        <div class="heading">
+                            <a href="{% url 'channel-profile' channel.id %}"> <h4>{{video.user.channel_user.channel_name}} {% if video.user.channel_user.verified == True %}<small><i class="fa fa-check-circle"></i></small>{% endif %}</h4></a>
+                            <span id="count"></span> <span>Subscribers</span>
+
+                            <h5>{{video.description}}</h5>
+                            <span> <i class="fa fa-caret-down"></i>show more</span>
+                        </div>
+
+                        <div class="sub">
+                            <button onclick="addsub()" id="sub-btn" class="subscribe-btn">Subscribe</button>
+                        </div>
+
+                    </div>
+
+                    <hr class="mid-hr">
+
+                    <div class="comment">
+                        <div class="comment-heading flex">
+                            <h4><b>{{comment.count}} comments</b></h4>
+                        </div>
+                    </div>
+
+                    <div class="details comment_self flex">
+                        <div class="img">
+                            <img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReDYDCobDGmhjOJGUSmVwnZfMjfgA0EMepboIRAhyp64fAxW3_Mw7LTvCj9U0VauWrv3Q&usqp=CAU" alt="">
+                        </div>
+
+                        <form action="" style="width:100%" id="comment_form"`>
+                            {% csrf_token %}
+                        <div class="heading flex">
+                            <input type="hidden" value="{{video.id}}" id="id" name="id">
+                            <input type="text" placeholder="Add a Comment.." id="comment" name="comment">
+                            <button><i class="material-icons">send</i></button>
+                        </div>
+                    </form>
+
+                    </div>
+
+                <div id="comment-wrapper">
+                    {% for c in comment %}
+                    <div class="comment-tray">
+                        <div class="details_comment">
+                            <div class="details flex">
+                                <div class="img">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReDYDCobDGmhjOJGUSmVwnZfMjfgA0EMepboIRAhyp64fAxW3_Mw7LTvCj9U0VauWrv3Q&usqp=CAU"/>
+                                </div>
+                                <div class="heading">
+                                    <h4>{{c.user.username|title}}<span>{{c.date|timesince}} ago</span></h4>
+                                    <p>{{c.comment}}</p>
+                                    <div class="comment-like flex">
+                                        <div class="icon">
+                                            <i class="fa fa-thumbs-up"></i>
+                                            <label for=""><small>5</small></label>
+                                        </div>
+
+                                        <div class="icon">
+                                            <i class="fa fa-thumbs-down"></i>
+                                            <label for=""><small>2</small></label>
+                                        </div>
+
+                                        <div class="icon">
+                                            <label for=""><small>Reply</small></label>
+                                        </div>
+
+                                        <div class="icon">
+                                            <label for=""><button  data-id= {{c.id}} class="btn-del" style="color:darkblue; font-size: 16px;"><small>Delete</small></button></label> <!--data-* attributes are used to store extra information on HTML elements, every comment is having id that is c.id -->
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="replay">
+                            <label for="" class="tags"><i class="fa fa-caret-up"></i>Hide Reply</label>
+                            <div class="replay-details flex">
+                                <div class="img">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReDYDCobDGmhjOJGUSmVwnZfMjfgA0EMepboIRAhyp64fAxW3_Mw7LTvCj9U0VauWrv3Q&usqp=CAU" alt="">
+                                </div>
+                                <div class="text">
+                                    <h4><label for=""></label><span></span></h4>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    {% endfor %}
+                </div>    
+
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+   
+<script src="js/main.js"></script>    
+</body>
+</html>
+
+<script type="text/javascript">
+    $(document).on("submit", "#comment_form", function(e) {
+        e.preventDefault();  // Prevent the default form submission
+        
+        let co = $("#comment").val();  // Getting comment text
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'save-comment' %}",  //calling urls.py
+            data: {
+                id: $("#id").val(),     //this is video id
+                comment: co,       
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()  
+            },
+
+            success: function(){
+              //we created html variable and put complete code of comment
+
+                let html =  '<div class="details_comment">\
+                            <div class="details flex">\
+                                <div class="img">\
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReDYDCobDGmhjOJGUSmVwnZfMjfgA0EMepboIRAhyp64fAxW3_Mw7LTvCj9U0VauWrv3Q&usqp=CAU"/>\
+                                </div>\
+                                <div class="heading">\
+                                <h4>{{request.user.username|title}}<span>{%  now "H:i" %}</span></h4>\
+                                    <p>'+co+'</p>\
+                                    <div class="comment-like flex">\
+                                        <div class="icon">\
+                                            <i class="fa fa-thumbs-up"></i>\
+                                            <label for=""><small>5</small></label>\
+                                        </div>\
+					                    <div class="icon">\
+                                            <i class="fa fa-thumbs-down"></i>\
+                                            <label for=""><small>Dislike</small></label>\
+                                        </div>\
+					                    <div class="icon">\
+                                            <label for=""><small>Reply</small></label>\
+                                        </div>\
+                                        <div class="icon">\
+                                            <label for=""><button  data-id= {{c.id}} class="btn-del" style="color:darkblue"><small>Delete</small></button></label>\
+                                        </div>\
+					                    </div>\
+                                </div>\
+                            </div>\
+                        </div>\
+                        '
+
+                        $("#comment-wrapper").prepend(html)   // this will add html variable content inside comment-wrapper 
+            }
+            
+        });
+    });
+
+    $("#comment-wrapper").on("click",".btn-del", function(){
+        let id = $(this).attr("data-id")
+
+        mydata = {
+            cid:id
+        }
+        mythis = $(this)
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'delete-comment' %}",
+            data:mydata,
+
+            success:function(data){
+                if (data.status === 1){
+                    $(mythis).closest(".comment-tray").fadeOut();   //closest traverses from current to parent element in html
+                }    
+            }
+        })
+    })
+</script>
+
+<!--subscribe logic-->
+<script>
+    subcounter = document.getElementById("count")
+    sub_button = document.getElementById("sub-btn")
+    subscriber_added = []
+
+    function addsub(){
+        axios
+        .get("{% url 'add-sub' channel.pk %}")
+        .then(response => {
+                this.response= response.data;
+                sub_button.innerHTML= this.response;
+                loadsub();
+                sub_button.classList.toggle("unsubscribe-btn");
+            })
+
+          url=  "{% url 'add-sub' channel.pk %}"
+          console.log(url)
+
+        }
+
+        function loadsub(){
+        axios
+        .get("{% url 'load-sub' channel.pk %}")
+        .then(response => {
+                this.response= response.data;
+                subcounter.innerHTML =  this.response.length;
+            })
+
+            url=  "{% url 'load-sub' channel.pk %}"
+          console.log(url)
+        }   
+        window.onload = loadsub();
+
+</script>
+
+
+<!--likes logic-->
+
+
+<script>
+    let likescounter = document.getElementById("like-count")
+
+    function addlike(){
+        axios
+        .get("{% url 'add_like' video.id %}")
+        .then(like_response => {
+            if (like_response.data === "Dislike") {
+                likescounter.innerHTML = parseInt(likescounter.innerHTML) - 1;  
+            } else if (like_response.data === "Like") {
+                likescounter.innerHTML = parseInt(likescounter.innerHTML) + 1; 
+            }
+                loadlike();
+            })
+        }
+
+        function loadlike() {
+    axios
+        .get("{% url 'likeLoad' video.id %}")
+        .then(like_response => {
+            
+            likescounter.innerHTML = like_response.data.length;  
+        })
+}  
+        window.onload = loadlike();
+
+</script> 
+
+
+<!--Dislikes logic-->
+<script>
+    let dislikescounter = document.getElementById("dislike-count")
+
+    function adddislike(){
+        axios
+        .get("{% url 'add_dislike' video.id %}")
+        .then(dislike_response => {
+            if (dislike_response.data === "Dislike") {
+                dislikescounter.innerHTML = parseInt(dislikescounter.innerHTML) - 1;  
+            } else if (dislike_response.data === "Like") {
+                dislikescounter.innerHTML = parseInt(dislikescounter.innerHTML) + 1; 
+            }
+                loaddislike();
+            })
+        }
+
+        function loaddislike() {
+    axios
+        .get("{% url 'dislikeLoad' video.id %}")
+        .then(dislike_response => {
+            
+            dislikescounter.innerHTML = dislike_response.data.length;  
+        })
+}  
+        window.onload = loaddislike();
+
+</script> 
