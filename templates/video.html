@@ -62,6 +62,7 @@
                         <div class="view-text">
                             <span>{{video.views}} Views</span>
                         </div>
+                        
                         <div class="flex">
                             <div class="icon">
                                 <button id="like-button" onclick="addlike()"><i class="fa fa-thumbs-up"></i></button>
@@ -74,12 +75,18 @@
                             </div>
 
                             <div class="icon">
-                                <button><i class="fa fa-bookmark"></i></button>
+                                <a href="{% url 'saved-video' video.id %}"><button><i class="fa fa-bookmark"></i></button></a>
                                 <label for="">Save</label>
                             </div>
 
+                            
+                            <div class="icon">
+                                <a href="{% url 'video-edit' video.id  channel.id %}"><button><i class="fa fa-edit"></i></button></a>
+                                <label for="">Edit</label>
+                            </div>
 
                         </div>
+                        
                     </div>
 
                     <div class="details flex border_bottom">

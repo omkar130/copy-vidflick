@@ -20,21 +20,23 @@
         </div>
 
         <div class="header_search">
-            <form action="">
-                <input type="text" placeholder="Search">
+            <form action="{% url 'search-view' %}" method="GET">
+                <input type="text" placeholder="Search" name="qt">
                 <button><i class="material-icons">search</i></button>
             </form>
         </div>
 
         <div class="header_icons">
             <i class="material-icons display-this">search</i>
-            <i class="material-icons display-this">videocam</i>
+            <a href="{% url 'video-upload' %}"><i class="material-icons display-this">videocam</i></a>
             <i class="material-icons display-this">apps</i>
             <i class="material-icons display-this">notifications</i>
             <i id="drop-down" class="material-icons display-this">account_circle</i>
         </div>
 
     </div>
+
+    {% include 'userauths/message.html'%}
 
     <div class="main_body">
         <div class="sidebar">
@@ -80,6 +82,25 @@
                     <i class="material-icons">thumb_up</i>
                     <span>Liked Videos</span>
                 </div>
+            </div>
+            <hr>
+            <div class="sidebar_categories">
+                {% if not request.user.is_authenticated %}
+                <a href="{% url 'sign-in' %}">
+                <div class="sidebar_category">
+                    <i class="material-icons">login</i>
+                    <span>Login</span>
+                </div>
+                </a>
+
+                {% else %}
+                <a href="{% url 'sign-out' %}">
+                <div class="sidebar_category">
+                    <i class="material-icons">logout</i>
+                    <span>Logout</span>
+                </div>
+                </a>
+                {% endif %}
             </div>
             <hr>
         </div>

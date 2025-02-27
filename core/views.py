@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from core.models import Video, Comment
-from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from channel.models import Channel
-
+from userauths.models import Profile
+from django.db.models import Q                      #Q objects are used for complex queries involving AND, OR, and NOT conditions
 
 def index(request):
     video = Video.objects.filter(visibility="public")  # all() ->all video will come. filter()-> particular filter videos will come.
@@ -45,6 +46,19 @@ def channel_profile(request,id):
     }
     
     return render(request,"channel/channel.html",context)
+
+
+def saved_video(request, id):
+    video = Video.objects.get(id=id)
+    user = Profile.objects.get(user=request.user)        # we want user profile, so we getting by user=request.user(it will current logged user)
+    
+    if video in user.saved_videos.all():
+        user.saved_videos.remove(video)
+    else:
+        user.saved_videos.add(video)    
+    
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))     #we are loading current page again, after clicking save button. HTTP REFERER is the header and (request.META.get("HTTP REFERER")) ->retreives url of current page from header
+    
 
 
 def ajax_save_comment(request):
@@ -114,10 +128,7 @@ def load_video_likes(request, id):
     return JsonResponse(likes_list, safe=False, status=200)
        
             
-        
-        
-        
-        
+   
 def add_new_dislike(request, id):
     video = Video.objects.get(id=id)
     user = request.user
@@ -135,3 +146,19 @@ def load_video_dislikes(request, id):
     video = Video.objects.get(id=id)
     dislikes_list = list(video.dislikes.values())
     return JsonResponse(dislikes_list, safe=False, status=200)        
+
+
+def searchView(request):
+    video = Video.objects.filter(visibility="public")
+    query =  request.GET.get("qt")
+    if query:
+        video = video.filter(
+            Q(title__icontains=query)|                       #comparing data base title with query
+            Q(description__icontains=query)
+        ).distinct()
+        
+    context ={
+        "video":video,
+        "query":query,
+    }    
+    return render(request,"search.html",context)

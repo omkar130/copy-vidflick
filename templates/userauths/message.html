@@ -1,0 +1,36 @@
+<head>
+<style>
+
+.success{
+    background-color: green;
+    padding: 8px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    border: 1px solid green;
+}
+
+.warning{
+    background-color: red;
+    padding: 8px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    border: 1px solid red;
+}
+
+
+</style>
+</head>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="close" aria-label="Close" onclick="this.parentElement.style.display='none';">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+

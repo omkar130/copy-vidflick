@@ -3,7 +3,7 @@ from core import views
 
 
 urlpatterns=[
-    path("",views.index),
+    path("",views.index,name="index"),
     path("watch/<int:pk>/",views.videoDetail, name="video-detail"),
     path("ajax-save-comment/", views.ajax_save_comment,name="save-comment"),
     path("delete-comment/", views.delete_comment,name="delete-comment"),
@@ -17,6 +17,10 @@ urlpatterns=[
     path("add-dislike/<int:id>/", views.add_new_dislike,name="add_dislike"),
     path("dislikes-load/<int:id>/", views.load_video_dislikes,name="dislikeLoad"),
     
-    path("channel/<int:id>/",views.channel_profile,name="channel-profile")
+    path("channel/<int:id>/",views.channel_profile,name="channel-profile"),
+    
+    path("saved-video/<int:id>/",views.saved_video,name="saved-video"),
+    
+    path("video/search/",views.searchView,name="search-view"),
     
 ]

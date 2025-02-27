@@ -23,6 +23,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("",include("core.urls")),
     path("",include("channel.urls")),
+    path("user/",include("userauths.urls")),
 ]
 
 #we are letting know django about static and media folder.
