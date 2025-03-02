@@ -1,10 +1,23 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from core.models import Video, Comment
 from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from channel.models import Channel
 from userauths.models import Profile
 from django.db.models import Q                      #Q objects are used for complex queries involving AND, OR, and NOT conditions
+from django.contrib import messages
+
+def  registeruser (request):
+    messages.warning(request,"You need to register/login to use this feature")
+    return redirect("intro")
+    
+
+def intro(request):
+    video = Video.objects.filter(visibility="public")  # all() ->all video will come. filter()-> particular filter videos will come.
+    context = {
+        "video": video,
+    }
+    return render(request,'intro.html',context)
 
 def index(request):
     video = Video.objects.filter(visibility="public")  # all() ->all video will come. filter()-> particular filter videos will come.

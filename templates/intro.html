@@ -95,37 +95,29 @@
     <div class="sidebar">
         <div class="sidebar_categories">
             <div class="sidebar_category">
-                <a href="{% url 'index' %}"> <i class="material-icons">home</i></a>
-                <a href="{% url 'index' %}"><span>Home</span></a>
+                <a href="{% url 'registeruser' %}"> <i class="material-icons">home</i></a>
+                <a href="{% url 'registeruser' %}"><span>Home</span></a>
             </div>
 
             <div class="sidebar_category">
-                <a href="{% url 'trend' %}"><i class="material-icons">local_fire_department</i></a>
-                <a href="{% url 'trend' %}"><span>Trending</span></a>
+                <a href="{% url 'registeruser' %}"><i class="material-icons">local_fire_department</i></a>
+                <a href="{% url 'registeruser' %}"><span>Trending</span></a>
             </div>
 
             <div class="sidebar_category">
-                <a href="{% url 'show_subscriptions' %}"><i class="material-icons">subscriptions</i></a>
-                <a href="{% url 'show_subscriptions' %}"><span>Subscriptions</span></a>
+                <a href="{% url 'registeruser' %}"><i class="material-icons">subscriptions</i></a>
+                <a href="{% url 'registeruser' %}"><span>Subscriptions</span></a>
             </div>
             <hr>
         </div>
 
-        {% if channel.user == user%}
-        <div class="sidebar_categories">
             <div class="sidebar_category">
-                <a href="{% url 'your_videos' channel.id %}"><i class="material-icons">play_arrow</i></a>
-                <a href="{% url 'your_videos' channel.id %}"><span>Your Videos</span></a>
-            </div>
-        {% endif %}    
-
-            <div class="sidebar_category">
-                <a href="{% url 'show_saved_video'  %}"><i class="material-icons">video_library</i></a>
-                <a href="{% url 'show_saved_video'  %}"><span>Saved Videos</span></a>
+                <a href="{% url 'registeruser' %}"><i class="material-icons">video_library</i></a>
+                <a href="{% url 'registeruser' %}"><span>Saved Videos</span></a>
             </div>
 
             <div class="sidebar_category">
-                <a href="{% url 'show-liked-video'  %}"> 
+                <a href="{% url 'registeruser' %}"> 
                     <i class="material-icons">thumb_up</i>
                     <span>Liked Videos</span>
                 </a>
@@ -133,22 +125,10 @@
         </div>
         <hr>
 
-        <div class="sidebar_categories">
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'sign-out' %}">
-                <div class="sidebar_category">
-                    <i class="material-icons">logout</i>
-                    <span>Logout</span>
-                </div>
-            </a>
-            {% endif %}
-        </div>
-        <hr>
-    </div>
 
     <div class="videos">
         <div class="drop-down-container">
-            <h4>Recommended</h4>
+            <h4></h4>
             <div class="dropdown-content-background">
                 <div class="dropdown-contents">
                     <div class="dropdown-content">
@@ -173,7 +153,7 @@
             {% for v in video %}
             <div class="card video-card">
                 <div class="video-thumbnail">
-                    <a href="{% url 'video-detail' v.id %}"><img src="{{ v.image.url }}" alt=""></a>
+                    <a href="{% url 'registeruser' %}"><img src="{{ v.image.url }}" alt=""></a>
                 </div>
                 <div class="video-details">
                     <div class="author">

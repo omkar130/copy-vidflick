@@ -113,6 +113,17 @@
         .author img:hover {
             transform: scale(1.1);
         }
+
+        .videos_container {
+            display: flex;
+            flex-wrap: nowrap;  /* Cards will be in a single row */
+            gap: 50px;  /* Increased space between cards */
+            overflow-x: auto;  /* Allow horizontal scroll if the cards overflow */
+            padding: 20px;
+        }
+        .main_body{
+            background-color: #f9f7f9;
+        }
     </style>
 </head>
 <body>
@@ -179,7 +190,7 @@
 
     <!-- Main Body Starts -->
     <div class="mainBody">
-        <div class="videos">
+        <div class="">
             <div class="popular-video flex">
                 <h3>Your Saved Videos</h3>
             </div>

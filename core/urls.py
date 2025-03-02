@@ -3,7 +3,9 @@ from core import views
 
 
 urlpatterns=[
-    path("",views.index,name="index"),
+    path("",views.intro,name="intro"),
+    path("register/login/",views.registeruser,name="registeruser"),
+    path("index/",views.index,name="index"),
     path("trend/",views.trend,name="trend"),
     
     path("watch/<int:pk>/",views.videoDetail, name="video-detail"),

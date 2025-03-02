@@ -1,3 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'userauths/message.html'%}
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -14,38 +19,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
 
-    
+    <style>
+        main{
+            background-color: #f9f7f9;
+        }
+
+        section{
+        margin-left: 130px;
+    }
+
+    .left_content{
+        margin-top: 60px;
+    }
+
+    .video-player {
+    border-radius: 15px;
+}
+    .heading a{
+        text-decoration: none;
+    }
+    </style>
+
 </head>
 <body>
-
-    <div class="header">
-        <div class="header_left">
-            <i id="menu" class="material-icons">menu</i>
-            <img style="width:30px"src="images/icon.png">
-        </div>
-
-        <div class="header_search">
-            <form action="">
-                <input type="text" placeholder="Search">
-                <button><i class="material-icons">search</i></button>
-            </form>
-        </div>
-
-        <div class="header_icons">
-            <i class="material-icons display-this">search</i>
-            <i class="material-icons display-this">videocam</i>
-            <i class="material-icons display-this">apps</i>
-            <i class="material-icons display-this">notifications</i>
-            <i id="drop-down" class="material-icons display-this">account_circle</i>
-        </div>
-
-    </div>
 
     <main class="single_pages">
         <section class="video_items flex">
             <div class="left">
                 <div class="left_content">
-                    <video controls>
+                    <video controls class="video-player">
                         <source src="{{video.video.url}}" type="video/mp4"> <!--video-object, video-database variable-->
                     </video>
 
@@ -98,7 +100,6 @@
                             <span id="co">{{channel.subs}}</span> <span>Subscribers</span>
 
                             <h5>{{video.description}}</h5>
-                            <span> <i class="fa fa-caret-down"></i>show more</span>
                         </div>
 
                         <div class="sub">
@@ -136,48 +137,15 @@
                     <div class="comment-tray">
                         <div class="details_comment">
                             <div class="details flex">
-                                <div class="img">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReDYDCobDGmhjOJGUSmVwnZfMjfgA0EMepboIRAhyp64fAxW3_Mw7LTvCj9U0VauWrv3Q&usqp=CAU"/>
-                                </div>
                                 <div class="heading">
                                     <h4>{{c.user.username|title}}<span>{{c.date|timesince}} ago</span></h4>
                                     <p>{{c.comment}}</p>
-                                    <div class="comment-like flex">
-                                        <div class="icon">
-                                            <i class="fa fa-thumbs-up"></i>
-                                            <label for=""><small>5</small></label>
-                                        </div>
-
-                                        <div class="icon">
-                                            <i class="fa fa-thumbs-down"></i>
-                                            <label for=""><small>2</small></label>
-                                        </div>
-
-                                        <div class="icon">
-                                            <label for=""><small>Reply</small></label>
-                                        </div>
-
-                                        <div class="icon">
-                                            <label for=""><button  data-id= {{c.id}} class="btn-del" style="color:darkblue; font-size: 16px;"><small>Delete</small></button></label> <!--data-* attributes are used to store extra information on HTML elements, every comment is having id that is c.id -->
-                                        </div>
-
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
 
-                        <div class="replay">
-                            <label for="" class="tags"><i class="fa fa-caret-up"></i>Hide Reply</label>
-                            <div class="replay-details flex">
-                                <div class="img">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReDYDCobDGmhjOJGUSmVwnZfMjfgA0EMepboIRAhyp64fAxW3_Mw7LTvCj9U0VauWrv3Q&usqp=CAU" alt="">
-                                </div>
-                                <div class="text">
-                                    <h4><label for=""></label><span></span></h4>
-                                    <p></p>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <hr>
                     </div>
                     {% endfor %}
@@ -193,6 +161,7 @@
 <script src="js/main.js"></script>    
 </body>
 </html>
+
 
 <script type="text/javascript">
     $(document).on("submit", "#comment_form", function(e) {
@@ -281,6 +250,7 @@
     
 
     function lo() {
+        console.log("hi")
         if (isSubscribed == "true") {
             sub_button.innerHTML = "Unsubscribe";
             sub_button.classList.add("unsubscribe-btn");
@@ -325,7 +295,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-    lo();
+    lo()
 });
 
 </script>
@@ -392,3 +362,5 @@
         window.onload = loaddislike();
 
 </script> 
+
+{% endblock %}
