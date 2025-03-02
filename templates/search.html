@@ -1,162 +1,176 @@
-<!-- loading static because css is in static>css>style.css -->
-{% load static %} 
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'userauths/message.html'%}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VidFlick</title>
-    <link rel="icon" type="images/png" href="images/icon.png">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Hover effect for icons */
+        .material-icons {
+            color: #1F49EF;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
 
+        .material-icons:hover {
+            color: #FF6347;  /* Change to a different color on hover */
+            transform: scale(1.2);  /* Slightly enlarge the icon on hover */
+        }
+
+        .sidebar_category a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .sidebar_category a:hover i, .sidebar_category a:hover span {
+            color: #FF6347;  /* Change icon and text color on hover */
+        }
+
+        .sidebar_category i, .sidebar_category span {
+            color: #1F49EF;
+            transition: color 0.3s ease;
+        }
+
+        .dropdown-content {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .dropdown-content:hover i, .dropdown-content:hover span {
+            color: #FF6347;  /* Hover effect for dropdown items */
+        }
+    </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="header_left">
-            <i id="menu" class="material-icons">menu</i>
-            <img style="width:30px"src="{% static 'images/icon.png' %}">
-        </div>
-
-        <div class="header_search">
-            <form action="">
-                <input type="text" placeholder="Search">
-                <button><i class="material-icons">search</i></button>
-            </form>
-        </div>
-
-        <div class="header_icons">
-            <i class="material-icons display-this">search</i>
-            <a href="{% url 'video-upload' %}"><i class="material-icons display-this">videocam</i></a>
-            <i class="material-icons display-this">apps</i>
-            <i class="material-icons display-this">notifications</i>
-            <i id="drop-down" class="material-icons display-this">account_circle</i>
-        </div>
-
-    </div>
-
-    {% include 'userauths/message.html'%}
-
-    <div class="main_body">
-        <div class="sidebar">
-            <div class="sidebar_categories">
-                <div class="sidebar_category">
-                    <i class="material-icons">home</i>
-                    <span>Home</span>
-                </div>
-
-                <div class="sidebar_category">
-                    <i class="material-icons">local_fire_department</i>
-                    <span>Trending</span>
-                </div>
-
-                <div class="sidebar_category">
-                    <i class="material-icons">subscriptions</i>
-                    <span>Subscriptions</span>
-                </div>
-                <hr>
+<div class="main_body">
+    <div class="sidebar">
+        <div class="sidebar_categories">
+            <div class="sidebar_category">
+                <a href="{% url 'index' %}"> <i class="material-icons">home</i></a>
+                <a href="{% url 'index' %}"><span>Home</span></a>
             </div>
-             <div class="sidebar_categories">
-                <div class="sidebar_category">
-                    <i class="material-icons">library_add_check</i>
-                    <span>Library</span>
-                </div>
 
-                <div class="sidebar_category">
-                    <i class="material-icons">history</i>
-                    <span>History</span>
-                </div>
+            <div class="sidebar_category">
+                <a href="{% url 'trend' %}"><i class="material-icons">local_fire_department</i></a>
+                <a href="{% url 'trend' %}"><span>Trending</span></a>
+            </div>
 
-                <div class="sidebar_category">
-                    <i class="material-icons">play_arrow</i>
-                    <span>Your Videos</span>
-                </div>
-
-                <div class="sidebar_category">
-                    <i class="material-icons">watch_later</i>
-                    <span>Watch Later</span>
-                </div>
-
-                <div class="sidebar_category">
-                    <i class="material-icons">thumb_up</i>
-                    <span>Liked Videos</span>
-                </div>
+            <div class="sidebar_category">
+                <a href="{% url 'show_subscriptions' %}"><i class="material-icons">subscriptions</i></a>
+                <a href="{% url 'show_subscriptions' %}"><span>Subscriptions</span></a>
             </div>
             <hr>
-            <div class="sidebar_categories">
-                {% if not request.user.is_authenticated %}
-                <a href="{% url 'sign-in' %}">
+        </div>
+
+        <div class="sidebar_categories">
+            <div class="sidebar_category">
+                <a href="{% url 'your_videos' channel.id %}"><i class="material-icons">play_arrow</i></a>
+                <a href="{% url 'your_videos' channel.id %}"><span>Your Videos</span></a>
+            </div>
+
+            <div class="sidebar_category">
+                <a href="{% url 'show_saved_video'  %}"><i class="material-icons">video_library</i></a>
+                <a href="{% url 'show_saved_video'  %}"><span>Saved Videos</span></a>
+            </div>
+
+            <div class="sidebar_category">
+                <a href="{% url 'show-liked-video'  %}"> 
+                    <i class="material-icons">thumb_up</i>
+                    <span>Liked Videos</span>
+                </a>
+            </div>
+        </div>
+        <hr>
+
+        <div class="sidebar_categories">
+            {% if not request.user.is_authenticated %}
+            <a href="{% url 'sign-in' %}">
                 <div class="sidebar_category">
                     <i class="material-icons">login</i>
                     <span>Login</span>
                 </div>
-                </a>
+            </a>
 
-                {% else %}
-                <a href="{% url 'sign-out' %}">
+            {% else %}
+            <a href="{% url 'sign-out' %}">
                 <div class="sidebar_category">
                     <i class="material-icons">logout</i>
                     <span>Logout</span>
                 </div>
-                </a>
-                {% endif %}
-            </div>
-            <hr>
+            </a>
+            {% endif %}
         </div>
-
-        <div class=videos>
-            <div class="drop-down-container">
-                <h4 style="font-size: 20px;"> Showing Result for {{query}} </h4>
-                <div class="dropdown-content-background">
-                    <div class="dropdown-contents">
-                        <div class="dropdown-content">
-                            <i class="material-icons">videocam</i>
-                            <span>Create</span>
-                        </div>
-
-                        <div class="dropdown-content">
-                            <i class="material-icons">settings</i>
-                            <span>Settings</span>
-                        </div>
-
-                        <div class="dropdown-content">
-                            <i class="material-icons">person</i>
-                            <span>Switch Account</span>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            
-
-            <div class="videos_container">
-
-                {% for v in  video %}
-                <div class="video">
-                    <div class="video_thumbnail">
-                       <a href="{% url 'video-detail' v.id %}"> <img src="{{v.image.url}}" alt=""> </a>  <!-- video.detail- is url pattern of django. we are getting image from database using object. url tells django that u need to get image from path -->
-                    </div>
-                    <div class="video_details">
-                        <div class="author">
-                            <img src="{{v.user.channel_user.image.url}}" alt="">
-                        </div>
-                        <div class="title">
-                            <a href="{% url 'video-detail' v.id %}"> <h3>{{v.title}}</h3></a>  <!--video-detail is name that we mentioned in urls.py , django stores id of all videos in db so we use v.id to get it-->
-                            <a href=""><small>{{v.user.channel_user.channel_name}} {% if v.user.channel_user.verified == True %}<i class="material-icons">verified</i>{% endif %}</small></a>
-                            <span><small>{{v.views}} Views. {{v.date| timesince}}</small></span> <!--timesince to get correct time format like (-- minutes ago)-->
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-
-                
-            </div>
-
-        </div>
-
+        <hr>
     </div>
-   
-<script src="js/main.js"></script>    
+
+    <div class="videos">
+        <div class="drop-down-container">
+            <h4>Showing result for {{query}}</h4>
+            <div class="dropdown-content-background">
+                <div class="dropdown-contents">
+                    <div class="dropdown-content">
+                        <i class="material-icons">videocam</i>
+                        <span>Create</span>
+                    </div>
+
+                    <div class="dropdown-content">
+                        <i class="material-icons">settings</i>
+                        <span>Settings</span>
+                    </div>
+
+                    <div class="dropdown-content">
+                        <i class="material-icons">person</i>
+                        <span>Switch Account</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="videos_container">
+            {% for v in video %}
+            <div class="video">
+                <div class="video_thumbnail">
+                   <a href="{% url 'video-detail' v.id %}">
+                       <img src="{{v.image.url}}" alt="">
+                   </a>
+                </div>
+                <div class="video_details">
+                    <div class="author">
+                        <img src="{{v.user.channel_user.image.url}}" alt="">
+                    </div>
+                    <div class="title">
+                        <a href="{% url 'video-detail' v.id %}"> 
+                            <h3>{{v.title}}</h3>
+                        </a>
+                        <a href="">
+                            <small>
+                                {{v.user.channel_user.channel_name}} 
+                                {% if v.user.channel_user.verified == True %}
+                                    <i class="material-icons">verified</i>
+                                {% endif %}
+                            </small>
+                        </a>
+                        <span><small>{{v.views}} Views. {{v.date|timesince}}</small></span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="js/main.js"></script>
+
 </body>
 </html>
+
+{% endblock %}

@@ -65,7 +65,7 @@
                         
                         <div class="flex">
                             <div class="icon">
-                                <button id="like-button" onclick="addlike()"><i class="fa fa-thumbs-up"></i></button>
+                                <a href="{% url 'liked-video' video.id %}"><button id="like-button" onclick="addlike()"><i class="fa fa-thumbs-up"></i></button></a>
                                 <label for=""><span id="like-count">0</span></label>
                             </div>
 
@@ -95,7 +95,7 @@
                         </div>
                         <div class="heading">
                             <a href="{% url 'channel-profile' channel.id %}"> <h4>{{video.user.channel_user.channel_name}} {% if video.user.channel_user.verified == True %}<small><i class="fa fa-check-circle"></i></small>{% endif %}</h4></a>
-                            <span id="count"></span> <span>Subscribers</span>
+                            <span id="co">{{channel.subs}}</span> <span>Subscribers</span>
 
                             <h5>{{video.description}}</h5>
                             <span> <i class="fa fa-caret-down"></i>show more</span>
@@ -271,39 +271,65 @@
 
 <!--subscribe logic-->
 <script>
-    subcounter = document.getElementById("count")
-    sub_button = document.getElementById("sub-btn")
-    subscriber_added = []
+    // Get the subscription counter and button elements
+    subcounter = document.getElementById("co");
+    sub_button = document.getElementById("sub-btn");
 
-    function addsub(){
-        axios
-        .get("{% url 'add-sub' channel.pk %}")
-        .then(response => {
-                this.response= response.data;
-                sub_button.innerHTML= this.response;
-                loadsub();
-                sub_button.classList.toggle("unsubscribe-btn");
-            })
+    // Pass the subscription status to JavaScript from Django
+    let isSubscribed = "{% if user in channel.subscribers.all %}true{% else %}false{% endif %}";
+    console.log(isSubscribed)
+    
 
-          url=  "{% url 'add-sub' channel.pk %}"
-          console.log(url)
-
+    function lo() {
+        if (isSubscribed == "true") {
+            sub_button.innerHTML = "Unsubscribe";
+            sub_button.classList.add("unsubscribe-btn");
+        } else {
+            sub_button.innerHTML = "Subscribe";
+            sub_button.classList.remove("unsubscribe-btn");
         }
+    }
 
-        function loadsub(){
-        axios
-        .get("{% url 'load-sub' channel.pk %}")
-        .then(response => {
-                this.response= response.data;
-                subcounter.innerHTML =  this.response.length;
+    // Function to handle subscription/unsubscription action
+    function addsub() {
+        // Send request to toggle subscription
+        axios.get("{% url 'add-sub' channel.pk %}")
+            .then(response => {
+                // Update button text based on response
+                if (response.data.subscribed) {
+                    sub_button.innerHTML = "Unsubscribe";
+                    sub_button.classList.add("unsubscribe-btn");
+                } else {
+                    sub_button.innerHTML = "Subscribe";
+                    sub_button.classList.remove("unsubscribe-btn");
+                }
+
+                loadsub();  // Update the subscriber count
             })
+            .catch(error => {
+                console.error("There was an error with the subscription request:", error);
+            });
+    }
 
-            url=  "{% url 'load-sub' channel.pk %}"
-          console.log(url)
-        }   
-        window.onload = loadsub();
+    // Function to load the subscriber count
+    function loadsub() {
+        axios.get("{% url 'load-sub' channel.pk %}")
+            .then(response => {
+                subcounter.innerHTML = response.data.length; // Update subscriber count
+            })
+            .catch(error => {
+                console.error("There was an error loading the subscriber count:", error);
+            });
+
+            
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+    lo();
+});
 
 </script>
+
 
 
 <!--likes logic-->

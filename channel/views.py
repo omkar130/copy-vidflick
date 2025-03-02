@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from channel.models import Channel
 from core.models import Video
 from channel.forms import VideoForm
+from channel.forms import ChannelForm
 from django.contrib import messages
 
 
@@ -32,6 +33,17 @@ def channel_videos(request,id):
     
     return render(request,"channel/channel-videos.html",context)
 
+def your_videos(request,id):
+    channel =  Channel.objects.get(id=id)
+    videos=Video.objects.filter(user=channel.user, visibility="public").order_by("-date")
+
+    context = {
+        "videos":videos,
+        "channel":channel,
+    }
+    
+    return render(request,"your_videos.html",context)
+
 
 def channel_about(request,id):
     channel =  Channel.objects.get(id=id)
@@ -45,6 +57,8 @@ def channel_about(request,id):
 
 def video_upload(request):
     user = request.user
+    channel = Channel.objects.get(user=request.user)
+    
     
     if request.method == "POST":
         form = VideoForm(request.POST, request.FILES)             #accepting user data
@@ -60,6 +74,7 @@ def video_upload(request):
             form = VideoForm()
     context = {
             "form":form,
+            "channel":channel,
     } 
     return render(request,"channel/upload.html",context)
 
@@ -85,3 +100,28 @@ def video_edit(request, video_id,channel_id):
             "form":form,
     } 
     return render(request,"channel/upload.html",context)
+
+
+
+def channel_create(request):
+    user = request.user
+    channel = Channel.objects.get(user=request.user)
+    
+    if request.method == "POST":
+        form = ChannelForm(request.POST, request.FILES)             #accepting user data
+        if form.is_valid():
+            new_form = form.save(commit=False)                    # we are saving form but not commiting to database
+            new_form.user= user                                   # new_form.user is database user matching with user variable(user=request.user)
+            new_form.save()
+            form.save_m2m()                                   #saving many2many field which is tag field
+            messages.success(request,f"Channel Created Successfully")
+            return redirect("index")
+        
+    else:
+            form = ChannelForm()
+    context = {
+            "form":form,
+            "channel":channel,
+    } 
+    
+    return render(request,"channel/create_channel.html",context)

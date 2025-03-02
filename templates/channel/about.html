@@ -1,81 +1,101 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VidFlick</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css" integrity="sha384-3B6NwesSXE7YJlcLI9RpRqGf2p/EgVH8BgoKTaUrmKNDkHPStTQ3EyoYjCGXaOTS" crossorigin="anonymous" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+{% extends 'base.html' %}
 
-</head>
-<body>
+{% block content %}
 
 
-    <div class="header">
-     
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        <div class="header_left">
-            <i id="menu" class="material-icons">menu</i>
-            <a href="index.html">
-                <img src="{% static 'images/icon.png'%}" alt="" style="width:40px; height:30px">
-            </a>
-        </div>
+
+<style>
+   
+    .btn {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+
+   
+    .channel-intro-video {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #fff;
+    }
+
+    .channel-intro-video:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .channel-intro-video .ratio {
+        border-radius: 10px 0 0 10px;
+    }
+
+    .channel-intro-video h3 {
+        transition: color 0.3s ease;
+    }
+
+    .channel-intro-video h3:hover {
+        color: #0d6efd;
+    }
+
+ 
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+
+   
+    .popular-video {
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+
+<div class="container my-5">
     
-
-        <div class="header__search">
-            <form action="">
-                <input type="text" placeholder="Search">
-                <button><i class="material-icons">search</i></button>
-            </form>
+    <div class="videos">
+        
+        <div class="channel-art mb-4">
+            <img src="{{channel.channel_art.url}}" alt="" class="img-fluid rounded mx-auto d-block">
         </div>
-       
-
-        <div class="header__icons">
-            <i class="material-icons display-this">search</i>
-            <i class="material-icons ">videocam</i>
-            <i class="material-icons">apps</i>
-            <i class="material-icons display-this">notifications</i>
-            <i id="drop-down" class="material-icons display-this">account_circle</i>
-        </div>
-        <!-- Header Icons Ends -->
-
-    </div>
-
-    <!-- Main Body Starts -->
-    <div class="mainBody">   
-        <!-- Video Section Starts -->
-        <div class="videos">
-            
-            <div class="channel-art">
-                <img src="{{channel.channel_art.url}}" alt="">
-            </div>
-            <div class="channel-header flex">
-                <div class="channel-img-title flex">
-                    <img class="img" src="{{channel.image.url}}" alt="">
-                    <div class="channel-image-texts">
-                        <h4>{{channel.channel_name}}</h4>
-                        <span id="count"></span> <span>Subscribers</span>
-                    </div>
-                </div>
-                <div class="sub">
-                    <button onclick="addsub()" id="sub-btn" class="subscribe-btn">Subscribe</button>
+        
+        <div class="channel-header d-flex align-items-center justify-content-between mb-4">
+            <div class="channel-img-title d-flex align-items-center">
+                <img class="rounded-circle me-3" src="{{channel.image.url}}" alt="" style="width: 80px; height: 80px;">
+                <div class="channel-image-texts">
+                    <h4 class="mb-0">{{channel.channel_name}}</h4>
+                    <span id="count">{{channel.subs}}</span> <span class="text-muted">Subscribers</span>
                 </div>
             </div>
-            <div class="channel-header-links flex">
-                <a href="{% url 'channel-prof' channel.id %}" class="display-this">Home</a>      <!--channel object has been sent by view to html-->
-                <a href="{% url 'channel-videos' channel.id %}" class="display-this">Videos</a>
-                <a href="" class="dont-display-thdis">Community</a>
-                <a href="{% url 'channel-about' channel.id %}" class="display-this">About</a>
-                <a href="" class="dont-display-this"><i class="material-icons">search</i></a>
+            <div class="sub">
+                {% if channel.user != user %}
+                 <button onclick="addsub()" id="sub-btn" class="btn btn-primary">Subscribe</button>
+                {% endif %}
             </div>
-            
-             
-            <br>
-                <hr>
+        </div>
+        
+        <div class="channel-header-links mb-4">
+            <nav class="nav nav-pills justify-content-center">
+                <a href="{% url 'channel-prof' channel.id %}" class="nav-link">Home</a>
+                <a href="{% url 'channel-videos' channel.id %}" class="nav-link">Videos</a>
+                <a href="{% url 'channel-about' channel.id %}" class="nav-link active">About</a>
+            </nav>
+        </div>
+        <hr>
             <div class="videos__container">
                 <!-- Single Video Starts Here -->
 
@@ -122,3 +142,5 @@
 <script src="js/main.js"></script>
 </body>
 </html>
+
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'userauths/message.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidFlick</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Hover effect for icons */
+        .material-icons {
+            color: #1F49EF;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .material-icons:hover {
+            color: #FF6347;  /* Change to a different color on hover */
+            transform: scale(1.2);  /* Slightly enlarge the icon on hover */
+        }
+
+        .sidebar_category a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .sidebar_category a:hover i, .sidebar_category a:hover span {
+            color: #FF6347;  /* Change icon and text color on hover */
+        }
+
+        .sidebar_category i, .sidebar_category span {
+            color: #1F49EF;
+            transition: color 0.3s ease;
+        }
+
+        /* 3D card effect */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px; /* Space below the card */
+            display: flex;
+            flex-direction: column; /* Keeps all content aligned */
+            width: 300px;  /* Fixed width for uniformity */
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Stronger shadow for 3D effect */
+        }
+
+        /* Custom styling for the video cards */
+        .video-thumbnail img {
+            width: 100%;
+            height: 180px;  /* Fixed height for consistent image size */
+            object-fit: cover; /* Ensures the image fits within the bounds */
+            border-radius: 8px;
+        }
+
+        .video-details {
+            padding: 10px;
+            flex-grow: 1; /* Ensures the details section grows to fill available space */
+        }
+
+        .video-title h3 {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .video-details small {
+            color: black;
+            font-size: 15px;
+        }
+
+        /* Layout for cards to be in one row */
+        .videos_container {
+            display: flex;
+            flex-wrap: nowrap;  /* Cards will be in a single row */
+            gap: 50px;  /* Increased space between cards */
+            overflow-x: auto;  /* Allow horizontal scroll if the cards overflow */
+            padding: 20px;
+        }
+
+        /* Button Styling */
+        .subscribe-btn {
+            background-color: #1F49EF;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: auto;  /* Pushes the button to the bottom of the card */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;  /* Ensures the button stretches across the width of the card */
+        }
+
+        .subscribe-btn:hover {
+            background-color: #FF6347;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main_body">
+    <div class="sidebar">
+        <div class="sidebar_categories">
+            <div class="sidebar_category">
+                <a href="{% url 'index' %}"><i class="material-icons">home</i></a>
+                <a href="{% url 'index' %}"><span>Home</span></a>
+            </div>
+
+            <div class="sidebar_category">
+                <a href="{% url 'trend' %}"><i class="material-icons">local_fire_department</i></a>
+                <a href="{% url 'trend' %}"><span>Trending</span></a>
+            </div>
+
+            <div class="sidebar_category">
+                <a href="{% url 'show_subscriptions' %}"><i class="material-icons">subscriptions</i></a>
+                <a href="{% url 'show_subscriptions' %}"><span>Subscriptions</span></a>
+            </div>
+            <hr>
+        </div>
+
+        <div class="sidebar_categories">
+            <div class="sidebar_category">
+                <a href="{% url 'your_videos' channel.id %}"><i class="material-icons">play_arrow</i></a>
+                <a href="{% url 'your_videos' channel.id %}"><span>Your Videos</span></a>
+            </div>
+
+            <div class="sidebar_category">
+                <a href="{% url 'show_saved_video' %}"><i class="material-icons">video_library</i></a>
+                <a href="{% url 'show_saved_video' %}"><span>Saved Videos</span></a>
+            </div>
+
+            <div class="sidebar_category">
+                <a href="{% url 'show-liked-video' %}"> 
+                    <i class="material-icons">thumb_up</i>
+                    <span>Liked Videos</span>
+                </a>
+            </div>
+        </div>
+        <hr>
+
+        <div class="sidebar_categories">
+            {% if not request.user.is_authenticated %}
+            <a href="{% url 'sign-in' %}">
+                <div class="sidebar_category">
+                    <i class="material-icons">login</i>
+                    <span>Login</span>
+                </div>
+            </a>
+
+            {% else %}
+            <a href="{% url 'sign-out' %}">
+                <div class="sidebar_category">
+                    <i class="material-icons">logout</i>
+                    <span>Logout</span>
+                </div>
+            </a>
+            {% endif %}
+        </div>
+        <hr>
+    </div>
+
+    <!-- Main Body Starts -->
+    <div class="mainBody">
+        <!-- Video Section Starts -->
+        <div class="videos">
+            <div class="popular-video flex">
+                <h3>Your Subscriptions</h3>
+            </div>
+            <br>
+            <div class="videos_container">
+
+                {% for v in subscriptions %}
+                <div class="card">
+                    <div class="video-thumbnail">
+                        <a href="{% url 'video-detail' v.id %}">
+                            <img src="{{ v.image.url }}" alt="Video Thumbnail">
+                        </a>
+                    </div>
+                    <div class="video-details">
+                        <div class="title">
+                            <a href="{% url 'video-detail' v.id %}">
+                                <h3>{{ v.title }}</h3>
+                            </a>
+                            <a href="">
+                                <small>{{ v.user.channel_user.channel_name }} 
+                                    {% if v.user.channel_user.verified == True %}
+                                    <i class="material-icons">verified</i>
+                                    {% endif %}
+                                </small>
+                            </a>
+                        </div>
+                    </div>
+                    <a href="{% url 'channel-profile' v.id %}">
+                        <button id="sub-btn" class="subscribe-btn">View Channel</button>
+                    </a>
+                </div>
+                {% endfor %}
+                
+            </div>
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+{% endblock %}

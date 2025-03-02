@@ -1,0 +1,138 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidFlick</title>
+    <style>
+        .brand {
+            margin-left: 6px;
+        }
+
+        /* Navbar background */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #B2C0F5;  /* Background color */
+        }
+
+        .header_left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header_left i, .header_left span {
+            color: #1F49EF;
+            font-size: 30px;
+            margin-right: 10px;
+        }
+
+        .header_left img {
+            width: 30px;
+            margin-left: 10px;
+        }
+
+        .header_left span {
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .header_search {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .header_search form {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+        }
+
+        .header_search input {
+            width: 100%;
+            font-size: 18px;
+        }
+
+        .header_search button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header_auth {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
+
+        .auth_button {
+            text-decoration: none;
+            color: #1F49EF;
+            font-weight: bold;
+            margin: 0 10px;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .auth_button:hover {
+            color: #FF6347;  /* Change color on hover */
+        }
+
+        .header_icons a {
+            margin: 0 15px;
+        }
+
+        /* Style for icons */
+        .material-icons {
+            color: #1F49EF;
+            font-size: 25px;  /* Make icons bigger */
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .header_icons a:hover i, .header_left i:hover {
+            transform: scale(1.3); 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header_left">
+            <img src="{% static 'images/icon.png' %}" style="width: 30px;">
+            <span class="brand">VidFlick</span>
+        </div>
+
+        <div class="header_search">
+            <form action="{% url 'search-view' %}" method="GET">
+                <input type="text" placeholder="Search" name="qt">
+                <button><i class="material-icons">search</i></button>
+            </form>
+        </div>
+
+        <div class="header_auth">
+            {% if user.id is None %} 
+            <a href="" class="auth_button">Welcome guest</a>
+            <a href="">Sign in</a> <span class="dark-transp"> | </span>
+            <a href=""> Register</a>
+            {% else %}
+            <a href="" class="auth_button">Welcome {{user}}</a>
+            {% endif %}
+        </div>
+
+
+        <div class="header_icons">
+            <a href="{% url 'channel-create' %}"><i class="material-icons display-this">apps</i></a>
+            <a href="{% url 'video-upload' %}"><i class="material-icons display-this">videocam</i></a>
+            <a href="{% url 'channel-profile' channel.id %}"><i id="drop-down" class="material-icons display-this">account_circle</i></a>
+        </div>
+    </div>
+
+</body>
+</html>

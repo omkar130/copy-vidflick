@@ -1,111 +1,69 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youtube</title>
-    <link rel="icon" type="images/png" href="images/youtube-icon.png">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css" integrity="sha384-3B6NwesSXE7YJlcLI9RpRqGf2p/EgVH8BgoKTaUrmKNDkHPStTQ3EyoYjCGXaOTS" crossorigin="anonymous" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <div class="header">
-        <!-- Header menu Start -->
+{% block content %}
 
-        <div class="header__left">
-            <i id="menu" class="material-icons">menu</i>
-            <a href="index.html">
-                <img src="" alt="">
-            </a>
+<!-- Main Body Starts -->
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white rounded-top-4">
+            <h4 class="mb-0">Upload Video</h4>
         </div>
-        <!-- Header menu end -->
-
-        <!-- Header seach Start -->
-
-        <div class="header__search">
-            <form action="">
-                <input type="text" placeholder="Search">
-                <button><i class="material-icons">search</i></button>
-            </form>
-        </div>
-        <!-- Header search Start -->
-        
-        <!-- Header Icons Start -->
-        <div class="header__icons">
-            <i class="material-icons display-this">search</i>
-            <i class="material-icons ">videocam</i>
-            <i class="material-icons">apps</i>
-            <i class="material-icons display-this">notifications</i>
-            <a href="channel.html"><i id="drop-down" class="material-icons display-this">account_circle</i></a>
-        </div>
-        <!-- Header Icons Ends -->
-
-    </div>
-
-    <!-- Main Body Starts -->
-    <div class="mainBody">
-   
-        <div class="videos">
+        <div class="card-body p-4">
             <form action="" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-            <div class="upload-content">
-                <div class="left-video">
-                    <h4>Details</h4>
-                    <div class="input-div">
-                        <span>Title (required) <span id="count"></span> </span><br>
-                        {{form.title}}
-                    </div>
-                    <script>
-                        
-                    </script>
-                    <div class="desc-div">
-                        <span>Description (required) <span id="desc-count"></span> </span> <br>
-                        {{form.description}}
-
-                    </div>
+                <div class="mb-4">
+                    <h4 class="fw-semibold">Details</h4>
                     
-                    <div class="tags-div">
-                        <span>Tags (optional) </span> <br>
-                        {{form.tags}}
-                        <p>Seperate Tags with Comma</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Title (required) <span id="count"></span></label>
+                        <div class="shadow-sm rounded-3">
+                            {{form.title}}
+                        </div>
                     </div>
 
-                    <div class="video-div file-input" id="file-input">
-                        <small>Thumbnail (required) </small> <br>
-                        {{form.image}}
-                        <!-- <input type='file'> -->
-                        <span class='button'><i class="material-icons">image</i></span>
-                           
-                    </div>
-                    
-                    <div class="video-div file-input">
-                        <small>Video (required) </small> <br>
-                        {{form.video}}
-                        <!-- <input type='file'> -->
-                        <span class='button'><i class="material-icons">videocam</i></span>
-                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description (required) <span id="desc-count"></span></label>
+                        <div class="shadow-sm rounded-3">
+                            {{form.description}}
+                        </div>
                     </div>
 
-                    <div class="video-div file-input">
-                        <small>Visibility (required) </small> <br>
-                        {{form.visibility}}
-                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tags (optional)</label>
+                        <div class="shadow-sm rounded-3">
+                            {{form.tags}}
+                        </div>
+                        <small class="form-text text-muted">Separate tags with commas</small>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Thumbnail (required)</label>
+                        <div class="shadow-sm rounded-3">
+                            {{form.image}}
+                        </div>
+                    </div>
 
-                    <div class="upload-btn-div">
-                        <button type="submit" class="upload-btn">Publish</button>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Video (required)</label>
+                        <div class="shadow-sm rounded-3">
+                            {{form.video}}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Visibility (required)</label>
+                        <div class="shadow-sm rounded-3">
+                            {{form.visibility}}
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm rounded-3">Publish</button>
                     </div>
                 </div>
-            </div>
-        </form>
-           
+            </form>
         </div>
     </div>
+</div>
 
-</body>
-</html> 
+{% endblock %}

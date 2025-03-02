@@ -24,6 +24,7 @@ class Channel(models.Model):
     status =  models.CharField(choices=STATUS,max_length=100,default='active')
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True,related_name="channel_user")
     subscribers = models.ManyToManyField(User, related_name="user_sub")
+    subs = models.IntegerField(default=0)
     verified = models.BooleanField(default=False)
     feature = models.BooleanField(default=True)
     bussiness_email = models.CharField(max_length=500, null=True)

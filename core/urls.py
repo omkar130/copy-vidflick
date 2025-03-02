@@ -4,6 +4,8 @@ from core import views
 
 urlpatterns=[
     path("",views.index,name="index"),
+    path("trend/",views.trend,name="trend"),
+    
     path("watch/<int:pk>/",views.videoDetail, name="video-detail"),
     path("ajax-save-comment/", views.ajax_save_comment,name="save-comment"),
     path("delete-comment/", views.delete_comment,name="delete-comment"),
@@ -21,6 +23,15 @@ urlpatterns=[
     
     path("saved-video/<int:id>/",views.saved_video,name="saved-video"),
     
+    path("show-saved-video/",views.show_saved_video,name="show_saved_video"),
+    
     path("video/search/",views.searchView,name="search-view"),
     
+    path("liked-video/<int:id>/",views.liked_video,name="liked-video"),
+    
+    path("show-liked-video/",views.show_liked_video,name="show-liked-video"),
+    
+    path("subscriptions/<int:id>",views.subscriptions,name="subscriptions"),
+    
+    path("show_subscriptions/",views.show_subscriptions,name="show_subscriptions"),
 ]

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Main Body Starts -->
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white rounded-top-4">
+            <h4 class="mb-0">Channel Creation Page</h4>
+        </div>
+        <div class="card-body p-4">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Full Name (required)</label>
+                    <div class="shadow-sm rounded-3">
+                        {{form.full_name}}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Channel Name (required)</label>
+                    <div class="shadow-sm rounded-3">
+                        {{form.channel_name}}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Channel Description (required)</label>
+                    <div class="shadow-sm rounded-3">
+                        {{form.description}}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Tags (optional)</label>
+                    <div class="shadow-sm rounded-3">
+                        {{form.keywords}}
+                    </div>
+                    <small class="form-text text-muted">Separate tags with commas</small>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Logo (required)</label>
+                    <div class="shadow-sm rounded-3">
+                        {{form.image}}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Channel Art (required)</label>
+                    <div class="shadow-sm rounded-3">
+                        {{form.channel_art}}
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg shadow-sm rounded-3">Create Channel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

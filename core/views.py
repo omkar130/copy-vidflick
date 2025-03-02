@@ -8,10 +8,22 @@ from django.db.models import Q                      #Q objects are used for comp
 
 def index(request):
     video = Video.objects.filter(visibility="public")  # all() ->all video will come. filter()-> particular filter videos will come.
+    channel = Channel.objects.get(user=request.user)
     context = {
-        "video": video
+        "video": video,
+        "channel":channel,
     }
     return render(request,'index.html',context)
+
+def trend(request):
+    
+    video =Video.objects.filter(visibility="public").order_by("-views") # all() ->all video will come. filter()-> particular filter videos will come.
+    channel = Channel.objects.get(user=request.user)
+    context = {
+        "video": video,
+        "channel":channel,
+    }
+    return render(request,'trend.html',context)
 
 def videoDetail(request,pk):
     video = Video.objects.get(id=pk)
@@ -60,6 +72,60 @@ def saved_video(request, id):
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))     #we are loading current page again, after clicking save button. HTTP REFERER is the header and (request.META.get("HTTP REFERER")) ->retreives url of current page from header
     
 
+def show_saved_video(request):
+    user = Profile.objects.get(user=request.user)
+    saved_videos = user.saved_videos.all()
+    channel = Channel.objects.get(user=request.user)
+    
+    context= {
+        'saved_videos': saved_videos,
+        'channel':channel,
+    }
+    return render(request, 'show_saved_videos.html', context)
+
+
+def liked_video(request, id):
+    video = Video.objects.get(id=id)
+    user = Profile.objects.get(user=request.user)        # we want user profile, so we getting by user=request.user(it will current logged user)
+    
+    if video in user.liked_videos.all():
+        user.liked_videos.remove(video)
+    else:
+        user.liked_videos.add(video)    
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER")) 
+
+def show_liked_video(request):
+    user = Profile.objects.get(user=request.user)
+    liked_videos = user.liked_videos.all()
+    channel = Channel.objects.get(user=request.user)
+    
+    context= {
+        'liked_videos': liked_videos,
+        'channel':channel,
+    }
+    return render(request, 'show_liked_videos.html', context)
+
+def subscriptions(request, id):
+    channel = Channel.objects.get(id=id)
+    user = Profile.objects.get(user=request.user)        # we want user profile, so we getting by user=request.user(it will current logged user)
+   
+    if channel in user.subscriptions.all():
+        user.subscriptions.remove(channel)
+    else:
+        user.subscriptions.add(channel)    
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER")) 
+
+
+def show_subscriptions(request):
+    user = Profile.objects.get(user=request.user)
+    subscriptions = user.subscriptions.all()
+    channel = Channel.objects.get(user=request.user)
+    
+    context= {
+        'subscriptions': subscriptions,
+        'channel':channel,
+    }
+    return render(request, 'subscriptions.html', context)
 
 def ajax_save_comment(request):
     if request.method == "POST":
@@ -87,24 +153,33 @@ def delete_comment(request):
 def add_new_subscribers(request, id):
         channel_subscribers = Channel.objects.get(id=id)    
         user = request.user
+        user_1 = Profile.objects.get(user=request.user) 
+        
+        if channel_subscribers in user_1.subscriptions.all():
+            user_1.subscriptions.remove(channel_subscribers)
+            channel_subscribers.subs -= 1
+            channel_subscribers.save()
+        else:
+            user_1.subscriptions.add(channel_subscribers) 
+            channel_subscribers.subs += 1
+            channel_subscribers.save()
         
         if user in channel_subscribers.subscribers.all():        # channel_subscribers is channel and subscribers is subscribers of channel
             channel_subscribers.subscribers.remove(user)
             channel_subscribers.save() 
-            response = "Subscribe"
-            return JsonResponse(response,safe=False, status=200)
+            return JsonResponse({'status': 'Subscribe', 'subscribed': False})
         else:
             channel_subscribers.subscribers.add(user)
             channel_subscribers.save() 
-            response = "UnSubscribe"
-            return JsonResponse(response,safe=False, status=200)
+            return JsonResponse({'status': 'Unsubscribe', 'subscribed': True})
         
  
 def load_channel_subs(request,id):
-     channel_subscribers = Channel.objects.get(id=id)     
-     sub_lists = list(channel_subscribers.subscribers.values())
-     print("Subscribers List:", sub_lists)
-     return JsonResponse(sub_lists, safe=False, status=200)
+    channel_subscribers = Channel.objects.get(id=id)     
+    subscriber_count = channel_subscribers.subs # Return the count directly
+    
+    return JsonResponse({'length': subscriber_count}, safe=False)
+
         
         
         
@@ -150,6 +225,7 @@ def load_video_dislikes(request, id):
 
 def searchView(request):
     video = Video.objects.filter(visibility="public")
+    channel = Channel.objects.get(user=request.user)
     query =  request.GET.get("qt")
     if query:
         video = video.filter(
@@ -160,5 +236,6 @@ def searchView(request):
     context ={
         "video":video,
         "query":query,
+        "channel":channel,
     }    
     return render(request,"search.html",context)

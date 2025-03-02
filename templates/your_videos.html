@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'userauths/message.html'%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidFlick</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+        
+        /* Hover effect for icons */
+        .material-icons {
+            color: #1F49EF;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .material-icons:hover {
+            color: #FF6347;
+            transform: scale(1.2);
+        }
+
+        .sidebar_category a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .sidebar_category a:hover i, .sidebar_category a:hover span {
+            color: #FF6347;
+        }
+
+        .sidebar_category i, .sidebar_category span {
+            color: #1F49EF;
+            transition: color 0.3s ease;
+        }
+
+        /* 3D card effect */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Custom styling for the video cards */
+        .video-card {
+            width: 18rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px 10px 0 0;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .video-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .video-details {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .video-details h3 {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .video-details small {
+            color: black;
+            font-size: 14px;
+        }
+
+        /* Container styling */
+        .videos__container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main_body">
+    <div class="sidebar">
+        <div class="sidebar_categories">
+            <div class="sidebar_category">
+                <a href="{% url 'index' %}"> <i class="material-icons">home</i></a>
+                <a href="{% url 'index' %}"><span>Home</span></a>
+            </div>
+            <div class="sidebar_category">
+                <a href="{% url 'trend' %}"><i class="material-icons">local_fire_department</i></a>
+                <a href="{% url 'trend' %}"><span>Trending</span></a>
+            </div>
+            <div class="sidebar_category">
+                <a href="{% url 'show_subscriptions' %}"><i class="material-icons">subscriptions</i></a>
+                <a href="{% url 'show_subscriptions' %}"><span>Subscriptions</span></a>
+            </div>
+            <hr>
+        </div>
+
+        <div class="sidebar_categories">
+            <div class="sidebar_category">
+                <a href="{% url 'your_videos' channel.id %}"><i class="material-icons">play_arrow</i></a>
+                <a href="{% url 'your_videos' channel.id %}"><span>Your Videos</span></a>
+            </div>
+            <div class="sidebar_category">
+                <a href="{% url 'show_saved_video' %}"><i class="material-icons">video_library</i></a>
+                <a href="{% url 'show_saved_video' %}"><span>Saved Videos</span></a>
+            </div>
+            <div class="sidebar_category">
+                <a href="{% url 'show-liked-video' %}">
+                    <i class="material-icons">thumb_up</i>
+                    <span>Liked Videos</span>
+                </a>
+            </div>
+        </div>
+        <hr>
+
+        <div class="sidebar_categories">
+            {% if not request.user.is_authenticated %}
+            <a href="{% url 'sign-in' %}">
+                <div class="sidebar_category">
+                    <i class="material-icons">login</i>
+                    <span>Login</span>
+                </div>
+            </a>
+            {% else %}
+            <a href="{% url 'sign-out' %}">
+                <div class="sidebar_category">
+                    <i class="material-icons">logout</i>
+                    <span>Logout</span>
+                </div>
+            </a>
+            {% endif %}
+        </div>
+        <hr>
+    </div>
+
+    <!-- Main Body Starts -->
+    <div class="mainBody">
+        <div class="videos">
+            <div class="popular-video flex">
+                <h3>Your Channel Videos</h3>
+            </div>
+            <br>
+            <div class="videos__container">
+                <!-- Single Video Starts Here -->
+                {% for v in videos %}
+                <div class="card video-card">
+                    <div class="video-thumbnail">
+                        <a href="{% url 'video-detail' v.id %}">
+                            <img src="{{ v.image.url }}" alt="">
+                        </a>
+                    </div>
+                    <div class="video-details">
+                        <div class="title">
+                            <a href="{% url 'video-detail' v.id %}">
+                                <h3>{{ v.title }}</h3>
+                            </a>
+                            <a href="">
+                                <small>{{ v.user.channel_user.channel_name }}
+                                    {% if v.user.channel_user.verified == True %}
+                                    <i class="material-icons">verified</i>
+                                    {% endif %}
+                                </small>
+                            </a>
+                            <span>
+                                <small>{{ v.views }} Views. {{ v.date|timesince }}</small>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'subscribe.html' %}
+<script src="js/main.js"></script>
+</body>
+</html>
+
+{% endblock %}

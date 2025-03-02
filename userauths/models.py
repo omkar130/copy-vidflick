@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.db.models import Model
 from django.contrib.auth.models import AbstractUser
 from core.models import Video
+from channel.models import Channel
 
 
 #AbstractUser is use to create custom user model
@@ -31,7 +32,9 @@ class User(AbstractUser):
     
 class Profile(Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True,blank=True)
-    saved_videos = models.ManyToManyField(Video, null=True,blank=True)
+    saved_videos = models.ManyToManyField(Video, null=True,blank=True,related_name='saved_by_users')
+    liked_videos = models.ManyToManyField(Video, null=True,blank=True,related_name='liked_by_users')
+    subscriptions = models.ManyToManyField(Channel, null=True,blank=True,related_name='subscribe_by_users')
     
     
     def __str__(self):
