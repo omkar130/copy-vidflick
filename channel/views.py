@@ -4,7 +4,7 @@ from core.models import Video
 from channel.forms import VideoForm
 from channel.forms import ChannelForm
 from django.contrib import messages
-
+from userauths.models import Profile
 
 def channel_profile(request,id):
     channel =  Channel.objects.get(id=id)
@@ -24,14 +24,20 @@ def channel_profile(request,id):
 
 def channel_videos(request,id):
     channel =  Channel.objects.get(id=id)
-    videos=Video.objects.filter(user=channel.user, visibility="public").order_by("-date")
+    user = Profile.objects.get(user=request.user)
+    if channel in user.subscriptions.all():
+        videos=Video.objects.filter(user=channel.user, visibility="public").order_by("-date")
 
-    context = {
+        context = {
         "videos":videos,
         "channel":channel,
-    }
+        }
+        return render(request,"channel/channel-videos.html",context)    
+    else:
+        messages.warning(request,"You need to subscribe to channel to view videos")   
     
-    return render(request,"channel/channel-videos.html",context)
+        return redirect("channel-prof", channel.id)
+
 
 def your_videos(request,id):
     channel =  Channel.objects.get(id=id)
@@ -101,11 +107,17 @@ def video_edit(request, video_id,channel_id):
     } 
     return render(request,"channel/upload.html",context)
 
+def video_delete(request, video_id,channel_id):
+    user = request.user
+    video = Video.objects.get(id=video_id)
+    channel = Channel.objects.get(id=channel_id)
 
+    video.delete()
+    messages.success(request, "Video deleted successfully.")
+    return redirect("index")
 
 def channel_create(request):
     user = request.user
-    channel = Channel.objects.get(user=request.user)
     
     if request.method == "POST":
         form = ChannelForm(request.POST, request.FILES)             #accepting user data
@@ -121,7 +133,40 @@ def channel_create(request):
             form = ChannelForm()
     context = {
             "form":form,
+    } 
+    
+    return render(request,"channel/create_channel.html",context)
+
+
+def channel_edit(request):
+    user = request.user
+    channel = Channel.objects.get(user=request.user)
+    
+    if request.method == "POST":
+        form = ChannelForm(request.POST, request.FILES,instance=channel)             #accepting user data
+        if form.is_valid():
+            new_form = form.save(commit=False)                    # we are saving form but not commiting to database
+            new_form.user= user                                   # new_form.user is database user matching with user variable(user=request.user)
+            new_form.save()
+            form.save_m2m()                                   #saving many2many field which is tag field
+            messages.success(request,f"Channel Edited Successfully")
+            return redirect("index")
+        
+    else:
+            form = ChannelForm(instance=channel)
+    context = {
+            "form":form,
             "channel":channel,
     } 
     
     return render(request,"channel/create_channel.html",context)
+
+
+def channel_delete(request,id):
+    channel = Channel.objects.get(id=id)
+    channel.delete()
+    return redirect("index")
+    
+    
+    
+    

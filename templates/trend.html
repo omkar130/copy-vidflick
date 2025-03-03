@@ -112,10 +112,17 @@
         </div>
 
         <div class="sidebar_categories">
+            {% if channel.user == user%}
             <div class="sidebar_category">
                 <a href="{% url 'your_videos' channel.id %}"><i class="material-icons">play_arrow</i></a>
                 <a href="{% url 'your_videos' channel.id %}"><span>Your Videos</span></a>
             </div>
+            {% else %}
+            <div class="sidebar_category">
+            <a href="{% url 'channeluser' %}"><i class="material-icons">play_arrow</i></a>    
+            <a href="{% url 'channeluser' %}"><span>Your Videos</span></a>  
+            </div>
+            {% endif %}  
 
             <div class="sidebar_category">
                 <a href="{% url 'show_saved_video'  %}"><i class="material-icons">video_library</i></a>

@@ -10,6 +10,10 @@ from django.contrib import messages
 def  registeruser (request):
     messages.warning(request,"You need to register/login to use this feature")
     return redirect("intro")
+
+def  channeluser (request):
+    messages.warning(request,"You need to create channel to use this feature")
+    return redirect("index")
     
 
 def intro(request):
@@ -21,20 +25,16 @@ def intro(request):
 
 def index(request):
     video = Video.objects.filter(visibility="public")  # all() ->all video will come. filter()-> particular filter videos will come.
-    channel = Channel.objects.get(user=request.user)
     context = {
         "video": video,
-        "channel":channel,
     }
     return render(request,'index.html',context)
 
 def trend(request):
     
     video =Video.objects.filter(visibility="public").order_by("-views") # all() ->all video will come. filter()-> particular filter videos will come.
-    channel = Channel.objects.get(user=request.user)
     context = {
         "video": video,
-        "channel":channel,
     }
     return render(request,'trend.html',context)
 
@@ -88,11 +88,9 @@ def saved_video(request, id):
 def show_saved_video(request):
     user = Profile.objects.get(user=request.user)
     saved_videos = user.saved_videos.all()
-    channel = Channel.objects.get(user=request.user)
     
     context= {
         'saved_videos': saved_videos,
-        'channel':channel,
     }
     return render(request, 'show_saved_videos.html', context)
 
@@ -110,11 +108,9 @@ def liked_video(request, id):
 def show_liked_video(request):
     user = Profile.objects.get(user=request.user)
     liked_videos = user.liked_videos.all()
-    channel = Channel.objects.get(user=request.user)
     
     context= {
         'liked_videos': liked_videos,
-        'channel':channel,
     }
     return render(request, 'show_liked_videos.html', context)
 
@@ -132,11 +128,9 @@ def subscriptions(request, id):
 def show_subscriptions(request):
     user = Profile.objects.get(user=request.user)
     subscriptions = user.subscriptions.all()
-    channel = Channel.objects.get(user=request.user)
     
     context= {
         'subscriptions': subscriptions,
-        'channel':channel,
     }
     return render(request, 'subscriptions.html', context)
 
@@ -238,7 +232,6 @@ def load_video_dislikes(request, id):
 
 def searchView(request):
     video = Video.objects.filter(visibility="public")
-    channel = Channel.objects.get(user=request.user)
     query =  request.GET.get("qt")
     if query:
         video = video.filter(
@@ -249,6 +242,5 @@ def searchView(request):
     context ={
         "video":video,
         "query":query,
-        "channel":channel,
     }    
     return render(request,"search.html",context)

@@ -82,10 +82,19 @@
                             </div>
 
                             
+                            {% if channel.user == user %}
                             <div class="icon">
                                 <a href="{% url 'video-edit' video.id  channel.id %}"><button><i class="fa fa-edit"></i></button></a>
                                 <label for="">Edit</label>
                             </div>
+
+                            <div class="icon">
+                                <a href="{% url 'video_delete' video.id  channel.id %}" class="ms-auto">
+                                   <button><i class="material-icons display-this">delete</i></button>
+                                </a>
+                            </div>
+
+                            {% endif %}
 
                         </div>
                         
@@ -102,9 +111,11 @@
                             <h5>{{video.description}}</h5>
                         </div>
 
+                        {% if channel.user != user %}
                         <div class="sub">
                             <button onclick="addsub()" id="sub-btn" class="subscribe-btn">Subscribe</button>
                         </div>
+                        {% endif %}
 
                     </div>
 

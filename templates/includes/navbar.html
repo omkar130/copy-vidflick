@@ -130,10 +130,17 @@
         <div class="header_icons">  
         {% if request.user.is_authenticated %}
             <a href="{% url 'channel-create' %}"><i class="material-icons display-this">movie_edit</i></a>
+            {% if channel.user == user%}
             <a href="{% url 'video-upload' %}"><i class="material-icons display-this">videocam</i></a>
+            {% else %}
+            <a href="{% url 'channeluser' %}"><i class="material-icons display-this">videocam</i></a>
+            {% endif %}
             {% if channel.user == user%}
             <a href="{% url 'channel-profile' channel.id %}"><i id="drop-down" class="material-icons display-this">switch_account</i></a>
+            {% else %}
+            <a href="{% url 'channeluser' %}"><i id="drop-down" class="material-icons display-this">switch_account</i></a>
             {% endif %}  
+
         {% endif %}    
         </div>
     </div>

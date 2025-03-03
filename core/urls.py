@@ -5,6 +5,7 @@ from core import views
 urlpatterns=[
     path("",views.intro,name="intro"),
     path("register/login/",views.registeruser,name="registeruser"),
+    path("channeluser/",views.channeluser,name="channeluser"),
     path("index/",views.index,name="index"),
     path("trend/",views.trend,name="trend"),
     

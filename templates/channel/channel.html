@@ -4,6 +4,7 @@
 
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
 <style>
@@ -78,23 +79,33 @@
                 <img class="rounded-circle me-3" src="{{channel.image.url}}" alt="" style="width: 80px; height: 80px;">
                 <div class="channel-image-texts">
                     <h4 class="mb-0">{{channel.channel_name}}</h4>
-                    <span id="count">{{channel.subs}}</span> <span class="text-muted">Subscribers</span>
+                    <span id="co">{{channel.subs}}</span> <span class="text-muted">Subscribers</span>
                 </div>
             </div>
-            <div class="sub">
-                {% if channel.user != user %}
-                 <button onclick="addsub()" id="sub-btn" class="btn btn-primary">Subscribe</button>
-                {% endif %}
-            </div>
-        </div>
+            
+                        {% if channel.user != user %}
+                        <div class="sub">
+                            <button onclick="addsub()" id="sub-btn" class="subscribe-btn">Subscribe</button>
+                        </div>
+                        {% endif %}
+             </div>
         
-        <div class="channel-header-links mb-4">
-            <nav class="nav nav-pills justify-content-center">
+        <div class="channel-header-links mb-4 d-flex justify-content-between align-items-center">
+            <nav class="nav nav-pills">
                 <a href="{% url 'channel-prof' channel.id %}" class="nav-link active">Home</a>
                 <a href="{% url 'channel-videos' channel.id %}" class="nav-link">Videos</a>
                 <a href="{% url 'channel-about' channel.id %}" class="nav-link">About</a>
             </nav>
+            {% if channel.user == user %}
+            <a href="{% url 'channel_edit'%}" class="ms-auto">
+                <i class="material-icons display-this">edit_square</i>
+            </a>
+            <a href="{% url 'channel_delete' channel.id %}" class="ms-auto">
+                <i class="material-icons display-this">delete</i>
+            </a>
+            {% endif %}
         </div>
+        
         
     
         <div class="channel-intro-video row mb-5 p-3">
@@ -152,8 +163,71 @@
     </div>
 </div>
 
-{% include 'subscribe.html' %}
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="js/main.js"></script>
+
+<!--subscribe logic-->
+<script>
+    // Get the subscription counter and button elements
+    subcounter = document.getElementById("co");
+    sub_button = document.getElementById("sub-btn");
+  
+    // Pass the subscription status to JavaScript from Django
+    let isSubscribed = "{% if user in channel.subscribers.all %}true{% else %}false{% endif %}";
+    console.log(isSubscribed)
+    
+  
+    function lo() {
+        console.log("hi")
+        if (isSubscribed == "true") {
+            sub_button.innerHTML = "Unsubscribe";
+            sub_button.classList.add("unsubscribe-btn");
+        } else {
+            sub_button.innerHTML = "Subscribe";
+            sub_button.classList.remove("unsubscribe-btn");
+        }
+    }
+  
+    // Function to handle subscription/unsubscription action
+    function addsub() {
+        // Send request to toggle subscription
+        axios.get("{% url 'add-sub' channel.pk %}")
+            .then(response => {
+                // Update button text based on response
+                if (response.data.subscribed) {
+                    sub_button.innerHTML = "Unsubscribe";
+                    sub_button.classList.add("unsubscribe-btn");
+                } else {
+                    sub_button.innerHTML = "Subscribe";
+                    sub_button.classList.remove("unsubscribe-btn");
+                }
+  
+                loadsub();  // Update the subscriber count
+            })
+            .catch(error => {
+                console.error("There was an error with the subscription request:", error);
+            });
+    }
+  
+    // Function to load the subscriber count
+    function loadsub() {
+        axios.get("{% url 'load-sub' channel.pk %}")
+            .then(response => {
+                subcounter.innerHTML = response.data.length; // Update subscriber count
+            })
+            .catch(error => {
+                console.error("There was an error loading the subscriber count:", error);
+            });
+  
+            
+    }
+  
+    document.addEventListener("DOMContentLoaded", function() {
+    lo()
+  });
+  
+  </script>
 
 {% endblock %}
