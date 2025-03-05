@@ -105,7 +105,7 @@
                             <img  src="{{video.user.channel_user.image.url}}" alt=""> <!--video.user it will check both models.py , after that .channel_user ask django to check in Channel models.py-->
                         </div>
                         <div class="heading">
-                            <a href="{% url 'channel-profile' channel.id %}"> <h4>{{video.user.channel_user.channel_name}} {% if video.user.channel_user.verified == True %}<small><i class="fa fa-check-circle"></i></small>{% endif %}</h4></a>
+                            <a href="{% url 'channel-prof' channel.id %}"> <h4>{{video.user.channel_user.channel_name}} {% if video.user.channel_user.verified == True %}<small><i class="fa fa-check-circle"></i></small>{% endif %}</h4></a>
                             <span id="co">{{channel.subs}}</span> <span>Subscribers</span>
 
                             <h5>{{video.description}}</h5>

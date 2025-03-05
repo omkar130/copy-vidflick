@@ -11,6 +11,6 @@ urlpatterns = [
     
     path("channel/create_channel",views.channel_create,name="channel-create"),
     path("channel/edit_channel",views.channel_edit,name="channel_edit"),
-    path("channel/delete_channel",views.channel_delete,name="channel_delete"),
+    path("channel/delete",views.channel_delete,name="channel_delete"),
     path("channel/<int:id>/your_video/",views.your_videos,name="your_videos"),
 ]

@@ -3,6 +3,7 @@ import taggit.managers
 from taggit.managers import TaggableManager
 from django.conf import settings
 
+
 User = settings.AUTH_USER_MODEL
 
 #This is Tuple(datatype in python) (key,value) collection of items.

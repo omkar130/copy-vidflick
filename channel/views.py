@@ -5,13 +5,14 @@ from channel.forms import VideoForm
 from channel.forms import ChannelForm
 from django.contrib import messages
 from userauths.models import Profile
+from django.db.models import Q
 
 def channel_profile(request,id):
     channel =  Channel.objects.get(id=id)
     
     videos=Video.objects.filter(user=channel.user, visibility="public").order_by("-views")
     
-    video_featured = Video.objects.get(user=channel.user.id) 
+    video_featured = Video.objects.filter(user=channel.user.id).first()
     
     context = {
         "channel":channel,                                       #this is actually passing the object to that html page so that page can use it.
@@ -22,21 +23,23 @@ def channel_profile(request,id):
     return render(request,"channel/channel.html",context)
 
 
-def channel_videos(request,id):
-    channel =  Channel.objects.get(id=id)
+def channel_videos(request, id):
+    channel = Channel.objects.get(id=id)
     user = Profile.objects.get(user=request.user)
-    if channel in user.subscriptions.all():
-        videos=Video.objects.filter(user=channel.user, visibility="public").order_by("-date")
-
-        context = {
-        "videos":videos,
-        "channel":channel,
-        }
-        return render(request,"channel/channel-videos.html",context)    
-    else:
-        messages.warning(request,"You need to subscribe to channel to view videos")   
     
+    if channel in user.subscriptions.all():
+        videos = Video.objects.filter(Q(user=channel.user) & Q(visibility__in=["public", "private"])).order_by("-date")
+        
+        context = {
+            "videos": videos,
+            "channel": channel,
+        }
+        return render(request, "channel/channel-videos.html", context)
+    
+    else:
+        messages.warning(request, "You need to subscribe to channel to view videos")
         return redirect("channel-prof", channel.id)
+
 
 
 def your_videos(request,id):
@@ -128,6 +131,9 @@ def channel_create(request):
             form.save_m2m()                                   #saving many2many field which is tag field
             messages.success(request,f"Channel Created Successfully")
             return redirect("index")
+        else:
+            print("Form is not valid!")
+            print(form.errors)
         
     else:
             form = ChannelForm()
@@ -162,8 +168,11 @@ def channel_edit(request):
     return render(request,"channel/create_channel.html",context)
 
 
-def channel_delete(request,id):
-    channel = Channel.objects.get(id=id)
+def channel_delete(request):
+    print("Channel deleted successfully.")
+    channel = Channel.objects.get(user=request.user)
+    videos = Video.objects.filter(user=request.user)
+    videos.delete()
     channel.delete()
     return redirect("index")
     
