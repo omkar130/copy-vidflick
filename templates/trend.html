@@ -65,16 +65,23 @@
         }
 
         /* Custom styling for the video cards */
-        .video-card {
-            width: 18rem;
-            margin-bottom: 20px;
-            display: inline-block;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
+        .videos_container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Aligns videos to the left */
+    gap: 43px; /* Optional: Adds space between cards */
+}
+
+.video-card {
+    width: 18rem;
+    margin-left: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
 
         .video-thumbnail img {
             width: 100%;
-            height: auto;
+            height: 175px;
             border-radius: 8px;
         }
 
@@ -188,7 +195,8 @@
         </div>
 
         <div class="videos_container mt-10">
-            {% for v in video %}
+         {% for v in video %}
+            {% if v.views > 70000 %}  
             <div class="card video-card">
                 <div class="video-thumbnail">
                     <a href="{% url 'video-detail' v.id %}"><img src="{{ v.image.url }}" alt=""></a>
@@ -206,7 +214,8 @@
                     </div>
                 </div>
             </div>
-            {% endfor %}
+            {% endif %}
+        {% endfor %}
         </div>
     </div>
 </div>

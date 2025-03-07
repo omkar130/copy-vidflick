@@ -6,6 +6,7 @@ from channel.forms import ChannelForm
 from django.contrib import messages
 from userauths.models import Profile
 from django.db.models import Q
+from  feature_lists.feature_properties import FeatureManager
 
 def channel_profile(request,id):
     channel =  Channel.objects.get(id=id)
@@ -111,11 +112,7 @@ def video_edit(request, video_id,channel_id):
     return render(request,"channel/upload.html",context)
 
 def video_delete(request, video_id,channel_id):
-    user = request.user
-    video = Video.objects.get(id=video_id)
-    channel = Channel.objects.get(id=channel_id)
-
-    video.delete()
+    FeatureManager.video_d(request,video_id,channel_id) 
     messages.success(request, "Video deleted successfully.")
     return redirect("index")
 
@@ -169,11 +166,7 @@ def channel_edit(request):
 
 
 def channel_delete(request):
-    print("Channel deleted successfully.")
-    channel = Channel.objects.get(user=request.user)
-    videos = Video.objects.filter(user=request.user)
-    videos.delete()
-    channel.delete()
+    FeatureManager.channel_d(request) 
     return redirect("index")
     
     

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from  feature_lists.feature_properties import FeatureManager
 from core.models import Video, Comment
 from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
@@ -6,6 +7,7 @@ from channel.models import Channel
 from userauths.models import Profile
 from django.db.models import Q                      #Q objects are used for complex queries involving AND, OR, and NOT conditions
 from django.contrib import messages
+
 
 def  registeruser (request):
     messages.warning(request,"You need to register/login to use this feature")
@@ -32,7 +34,7 @@ def index(request):
 
 def trend(request):
     
-    video =Video.objects.filter(visibility="public").order_by("-views") # all() ->all video will come. filter()-> particular filter videos will come.
+    video =Video.objects.filter(Q(visibility__in=["public", "private"])).order_by("-views") # all() ->all video will come. filter()-> particular filter videos will come.
     context = {
         "video": video,
     }
@@ -62,7 +64,7 @@ def channel_profile(request,id):
     
     videos=Video.objects.filter(user=channel.user, visibility="public").order_by("-views")
     
-    video_featured = Video.objects.get(user=channel.user.id) 
+    video_featured = Video.objects.filter(user=channel.user.id).first()
     
     context = {
         "channel":channel,
@@ -74,14 +76,8 @@ def channel_profile(request,id):
 
 
 def saved_video(request, id):
-    video = Video.objects.get(id=id)
-    user = Profile.objects.get(user=request.user)        # we want user profile, so we getting by user=request.user(it will current logged user)
     
-    if video in user.saved_videos.all():
-        user.saved_videos.remove(video)
-    else:
-        user.saved_videos.add(video)    
-    
+    FeatureManager.s_video(request,id) 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))     #we are loading current page again, after clicking save button. HTTP REFERER is the header and (request.META.get("HTTP REFERER")) ->retreives url of current page from header
     
 
@@ -96,13 +92,7 @@ def show_saved_video(request):
 
 
 def liked_video(request, id):
-    video = Video.objects.get(id=id)
-    user = Profile.objects.get(user=request.user)        # we want user profile, so we getting by user=request.user(it will current logged user)
-    
-    if video in user.liked_videos.all():
-        user.liked_videos.remove(video)
-    else:
-        user.liked_videos.add(video)    
+    FeatureManager.l_video(request,id) 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER")) 
 
 def show_liked_video(request):
@@ -116,12 +106,12 @@ def show_liked_video(request):
 
 def subscriptions(request, id):
     channel = Channel.objects.get(id=id)
-    user = Profile.objects.get(user=request.user)        # we want user profile, so we getting by user=request.user(it will current logged user)
+    user = Profile.objects.get(user=request.user)
    
     if channel in user.subscriptions.all():
-        user.subscriptions.remove(channel)
+            user.subscriptions.remove(channel)
     else:
-        user.subscriptions.add(channel)    
+            user.subscriptions.add(channel)     
     return HttpResponseRedirect(request.META.get("HTTP_REFERER")) 
 
 
@@ -189,7 +179,7 @@ def load_channel_subs(request,id):
 
         
         
-        
+
 
 def add_new_like(request, id):
     video = Video.objects.get(id=id)
